@@ -50,6 +50,6 @@ class TestCamelCaseParser(unittest.TestCase):
             ]
 
     def test_camel_case_parse(self):
-        strings = [_ for _ in self.CCP.parse_camel_case(*self.test_cases)]
+        strings = [_ for _ in self.CCP.parse(*self.test_cases, format='')]
         for idx, s in enumerate(strings):
             self.assertEqual(s, self.truth_cases[idx])
