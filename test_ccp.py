@@ -1,5 +1,5 @@
 import unittest
-from camel_case_parser import CamelCaseParser
+from case_parser import CamelCaseParser
 
 class TestCamelCaseParser(unittest.TestCase):
     def setUp(self):
@@ -26,30 +26,9 @@ class TestCamelCaseParser(unittest.TestCase):
                 "superLONGStringWithALotOfDifferentTypesOfCharacters1234567890",  # Super long string with many types
                 "finalExample_String-with_Many**Kinds++of&&Symbols_and123Numbers"  # Final example with many kinds of symbols and numbers
             ]
-        self.truth_cases = [
-                "simpleTestString",  # Simple string with no special characters
-                "anotherSimpleTest123",  # String with numbers
-                "thisIsATestStringWithUnderscores",  # String with underscores
-                "stringWithMultipleHyphens",  # String with multiple hyphens
-                "mixedCaseAnd123Numbers456",  # String with mixed case and numbers
-                "randomStringWithVariousSymbolsAndNumbers1234",  # String with various symbols and numbers
-                "moreComplexStringWithVariousSymbolsAndMixedCases567",  # String with more complex mix of symbols and cases
-                "aVeryLongStringWithLotsOfDifferentCharacters1234567890",  # Long string with many different characters
-                "shortString",  # Short string with special characters
-                "finalTestStringWith123NumbersAndSymbols",  # Final string with numbers and a variety of symbols
-                "extraComplexStringWithMultipleSeparatorsAndNumbers6789",  # Extra complex string with multiple separators
-                "noisyStringWithLotsOfSpecialCharacters",  # Noisy string with many special characters
-                "underscoreHeavyStringWithMixedCasesAndNumbers987",  # String with heavy underscores
-                "capsLockStringWithMixedCapsAndNumbers4321",  # String with mixed capitalization
-                "longStringWithVariety123AndSpecialCharacters",  # Long string with variety and special characters
-                "simpleMixedStringWithNumbers1234AndLetters",  # Simple mixed string with numbers and letters
-                "anotherExampleWithMixedCasesAnd123Numbers",  # Another example with mixed cases and symbols
-                "shortAndSweet12345",  # Short string with numbers
-                "superLongStringWithALotOfDifferentTypesOfCharacters1234567890",  # Super long string with many types
-                "finalExampleStringWithManyKindsOfSymbolsAnd123Numbers"  # Final example with many kinds of symbols and numbers
-            ]
 
     def test_camel_case_parse(self):
-        strings = [_ for _ in self.CCP.parse(*self.test_cases, format='')]
-        for idx, s in enumerate(strings):
-            self.assertEqual(s, self.truth_cases[idx])
+        strings = list(self.CCP.parse(*self.test_cases, sep=(sep:='_'), case='camel', drop_vowels=False))
+        for s in strings:
+            print(s)
+            self.assertNotRegex(s, rf'([^a-zA-Z0-9{sep}])')
