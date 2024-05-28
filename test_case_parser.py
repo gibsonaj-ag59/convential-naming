@@ -28,7 +28,7 @@ class TestCamelCaseParser(unittest.TestCase):
             ]
 
     def test_camel_case_parse(self):
-        strings = list(self.CCP.parse(*self.test_cases, sep=(sep:='_'), case='camel', drop_vowels=False))
+        strings = list(self.CCP.parse(*self.test_cases, sep=(sep:='-'), case='upper', drop_vowels=False))
         for s in strings:
             print(s)
             self.assertNotRegex(s, rf'([^a-zA-Z0-9{sep}])')
