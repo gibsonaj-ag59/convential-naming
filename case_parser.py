@@ -1,8 +1,9 @@
 from collections import defaultdict
+import concurrent.futures
 from string import printable
 import configparser
 import json
-class CamelCaseParser():
+class CaseParser():
     """String formatter for different commmon programming cases.
 
     Yields:
@@ -16,6 +17,8 @@ class CamelCaseParser():
     w_txt = config['DEFAULT']['WordTxt']
     # Init Word Dicts. w_dict is read from a
     __syms__ = [p for p in printable if not p.isalnum()]
+    __syms__.pop(23)
+    __syms__.append('')
     # txt document and is for user
     # updates to the word list. en_dict is read 
     # from JSON and is used by the
@@ -45,7 +48,7 @@ class CamelCaseParser():
     def __init__(self):
         """Constructor, set's obj level properties.
         """
-        # Set up a dictionary representing available case functions.
+        # Set up a dictionary representing available casing functions.
         self.__cases__ = {
         'lower': self.lower_case,
         'camel': self.camel_case,
@@ -68,20 +71,20 @@ class CamelCaseParser():
                 word = word.replace(w, '')
         return word
     
-    def create_case(self, words, sep='', case='camel', drop_vowels=False):
+    def create_case(self, words:list[str], sep='', casing='camel', drop_vowels=False):
         """Converts parsed word list to a list of lowercase strings
 
         Args:
             words (list[str]): list of words.
             sep (str): Separtor between words. Default is ''.
-            case (str): Case name for conversion.\n
+            casing (str): casing name for conversion.\n
                         Limited to 'lower', 'camel', 'pascal', 'upper'
             drop_vowels (bool): True to remove all vowels. Default is False
 
         Returns:
             string: converted strings joined on sep
         """
-        words = self.__cases__[case](words)
+        words = self.__cases__[casing](words)
         if drop_vowels:
             words = [self.vowel_drop(w) for w in words]
         return sep.join(words)
@@ -107,7 +110,6 @@ class CamelCaseParser():
         Returns:
             list: camelCase strings
         """
-        words[1:] = [w.capitalize() for w in words[1:]]
         return words
     
     def pascal_case(self, words):
@@ -134,44 +136,65 @@ class CamelCaseParser():
         words = [w.upper() for w in words]
         return words
 
-    def parse(self, *strings:str, sep='', case='camel',
+    def normalize(self, string:str):
+        for s in self.__syms__:
+            if s in string:
+                string = string.replace(s, '')
+        return string.lower()
+    
+    def _parse(self, string:str, sep='', casing='lower',
               drop_vowels=False):
         """Main parsing function.
 
         Args:
             *strings (tuple[str]): list of words, cleaned of symbols, and ready to convert.
             sep (str): join separator
-            case (str): Case name for conversion.\n
+            casing (str): casing name for conversion.
                         Limited to 'lower', 'camel', 'pascal', 'upper'
             drop_vowels (bool): True to remove all vowels. Default is False
 
         Yields:
-            str: String Converted to specified case and joined on sep.
+            str: String Converted to specified casing and joined on sep.
         """
-        for non_delim_string in strings:
-            self.words_list = []
-            for l in non_delim_string.lower():
-                if l in self.__syms__:
-                    non_delim_string = non_delim_string.replace(l, "")
-            norm_string = non_delim_string.lower()
-            reps = len(norm_string)
-            i = reps
-            while i in range(reps, 0, -1):
-                if str(len(norm_string[-i:])) in self.__en_dict__.keys():
-                    if norm_string[-i:].isdecimal():
-                        self.words_list.append(norm_string[-i:])
-                        norm_string = norm_string[:-i]
-                        i = len(norm_string)
-                    elif norm_string[-i:] in \
-                        self.__en_dict__[str(len(norm_string[-i:]))] \
-                            .get(norm_string[-i], []):
-                        self.words_list.append(norm_string[-i:])
-                        norm_string = norm_string[:-i]
-                        i = len(norm_string)
-                    else:
-                        i -= 1
+        
+        words_list = []
+        norm_string = list(self.normalize(string))
+        reps = len(norm_string)
+        i = reps
+        n = 1
+        while i in range(reps, 0, -1):
+            if str(len(norm_string[-i:-n]) - 1) in self.__en_dict__.keys():
+                if str(norm_string[-i:-n]).isdecimal():
+                    words_list.append(norm_string[-i:-n])
+                    i = len(norm_string[:-i])
+                    n += len(norm_string[-i:-n]) 
+                elif str(norm_string[-i:-n]) in \
+                    self.__en_dict__[str(len(norm_string[-i:-n])-1)] \
+                        .get(norm_string[-i], []):
+                    words_list.append(norm_string[-i:-n])
+                    i = len(norm_string)
                 else:
                     i -= 1
-            self.words_list.reverse()
-            yield self.create_case(self.words_list, sep, case, drop_vowels)
+            else:
+                i -= 1
+        words_list = words_list[-1:]
+        return self.create_case(words_list, sep=sep, casing=casing, drop_vowels=drop_vowels)
 
+    def parse(self, *strings:list[str], sep='', casing='lower', drop_vowels=False):
+        """Main parsing function.
+
+        Args:
+            *strings (tuple[str]): list of words, cleaned of symbols, and ready to convert.
+            sep (str): join separator
+            casing (str): casing name for conversion.
+                        Limited to 'lower', 'camel', 'pascal', 'upper'
+            drop_vowels (bool): True to remove all vowels. Default is False
+
+        Yields:
+            str: String Converted to specified casing and joined on sep.
+        """
+    
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_results = [executor.submit(self._parse, string, sep=sep, casing=casing, drop_vowels=drop_vowels) for string in strings]
+        results = [future.result() for future in concurrent.futures.as_completed(future_results)]
+        return results
