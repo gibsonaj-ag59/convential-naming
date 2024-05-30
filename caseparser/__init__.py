@@ -240,7 +240,7 @@ class CaseParser():
         """
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_results = [executor.submit(self._parse, 
-                                    str(string), 
+                                    string.__str__(), 
                                     sep=sep, 
                                     casing=casing, 
                                     drop_vowels=drop_vowels

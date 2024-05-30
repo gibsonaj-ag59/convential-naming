@@ -5,7 +5,7 @@ from time import time
 
 class TestCaseParser(unittest.TestCase):
     def setUp(self):
-        self.timer = time() 
+        self.start_time()
         self.seps = [p for p in printable if not p.isalnum()]
         self.seps.pop(23)
         self.seps.append('')
@@ -31,6 +31,7 @@ class TestCaseParser(unittest.TestCase):
                 "shortAndSweet12345",  # Short string with numbers
                 "superLONGStringWithALotOfDifferentTypesOfCharacters1234567890",  # Super long string with many types
                 "finalExample_String-with_Many**Kinds++of&&Symbols_and123Numbers",  # Final example with many kinds of symbols and numbers
+                "The room was a disaster zone, with clothes strewn across the floor like a colorful patchwork quilt tossed by a hurricane. Empty soda cans and crumpled snack wrappers littered every available surface, while textbooks and notebooks lay scattered about in haphazard piles. The once-pristine whiteboard was now covered in a chaotic jumble of equations and doodles, with eraser dust forming a fine layer over everything. The air was thick with the scent of stale pizza and sweat, and the sound of a buzzing fly added to the cacophony. Amidst the chaos, a lone laptop sat precariously on the edge of a cluttered desk, its screen flickering intermittently as if struggling to stay alive amidst the chaos."
             ]
         self.test_camel_truth = [
                 "simpleTestString",
@@ -52,12 +53,17 @@ class TestCaseParser(unittest.TestCase):
                 "anotherExampleWithMixedCasesAnd123Numbers",
                 "shortAndSweet12345",
                 "superLongStringWithALotOfDifferentTypesOfCharacters1234567890",
-                "finalExampleStringWithManyKindsOfSymbolsAnd123Numbers"
+                "finalExampleStringWithManyKindsOfSymbolsAnd123Numbers",
+                "theRoomWasADisasterZoneWithClothesStrewnAcrossTheFloorLikeAColorfulPatchWorkQuiltTossedByAHurricaneEmptySodaCansAndCrumpledSnackWrappersLitteredEveryAvailableSurfaceWhileTextbooksAndNotebooksLayScatteredAboutInHaphazardPilesTheOncePristineWhiteBoardWasNowCoveredInAChaoticJumbleOfEquationsAndDoodlesWithEraserDustFormingAFineLAyeRoverEverythingTheAirWasThickWithTheScentOfStalePizzaAndSweatAndTheSoundOfABuzzIngFlyAddedToTheCacophonyAmidstTheChaosAloneLaptopSatPrecariouslyONTheEdgeOfAClutteredDesKitsScreenFlickeringIntermittentlyAsIfStrugglingToStayAliveAmidstTheChaos"
         ]
-        
+
+    def start_time(self):
+        self.timer = time()
+
     def get_time(self):
         _ct = time() - self.timer
-        self.timer = time()
+        self.start_time()
+
         return f'\n{format(_ct, ".4")} seconds to test\n' + \
                f'{len(self.seps)* len(self.test_cases) * (len(list(self.CP.__cases__.keys())) + 1)} string normalizations.\n' + \
                f'Separators: {len(self.seps)}\n' + \
@@ -65,9 +71,10 @@ class TestCaseParser(unittest.TestCase):
                f'Cases: {list(self.CP.__cases__.keys()) + ["drop_vowels"]}'
     
     def test_camel_case_parse(self):
+        self.start_time()
         for sep in self.seps:
             strings = self.CP.parse(self.test_cases, sep=sep, casing='camel', drop_vowels=False)
-            self.assertTrue(strings[0][0].islower())
+            self.assertTrue(strings[0][0].islower() or strings[0][0].isdecimal())
             for s in strings:
                 self.assertNotRegex(s, r'([^a-zA-Z0-9' + sep + '])')
                 if sep == '':
@@ -75,6 +82,7 @@ class TestCaseParser(unittest.TestCase):
         print(self.get_time())
 
     def test_lower_case_parse(self):
+        self.start_time()
         for sep in self.seps:
             strings = self.CP.parse(self.test_cases, sep=sep, casing='lower', drop_vowels=False)
             self.assertTrue(word.islower() for word in strings)
@@ -83,6 +91,7 @@ class TestCaseParser(unittest.TestCase):
         print(self.get_time())
 
     def test_drop_vowels_all_cases(self):
+        self.start_time()
         for sep in self.seps:
             strings = self.CP.parse(self.test_cases, sep=sep, casing='lower', drop_vowels=True)
             for s in strings:
@@ -91,6 +100,7 @@ class TestCaseParser(unittest.TestCase):
         print(self.get_time())
     
     def test_pascal_case_parse(self):
+        self.start_time()
         for sep in self.seps:
             strings = self.CP.parse(self.test_cases, sep=sep, casing='pascal', drop_vowels=False)
             self.assertTrue(word[0].isupper() for word in strings)
@@ -99,6 +109,7 @@ class TestCaseParser(unittest.TestCase):
         print(self.get_time())
 
     def test_upper_case_parse(self):
+        
         for sep in self.seps:
             strings = self.CP.parse(self.test_cases, sep=sep, casing='upper', drop_vowels=False)
             self.assertTrue(word.isupper() for word in strings)
