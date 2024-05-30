@@ -3,8 +3,6 @@ import concurrent.futures
 from string import printable
 import configparser
 import json
-import sys
-import os
 
 class CaseParser():
     """String formatter for different commmon programming cases.
@@ -15,7 +13,7 @@ class CaseParser():
     ### init Resources
     # Read Config
     config = configparser.ConfigParser()
-    config.read(os.path.join('resources/case_parser.ini'))
+    config.read('resources/case_parser.ini')
     w_json = config['DEFAULT']['WordJson']
     w_txt = config['DEFAULT']['WordTxt']
     # Init Word Dicts. w_dict is read from a
