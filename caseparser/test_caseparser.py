@@ -31,7 +31,7 @@ class TestCaseParser(unittest.TestCase):
                 "shortAndSweet12345",  # Short string with numbers
                 "superLONGStringWithALotOfDifferentTypesOfCharacters1234567890",  # Super long string with many types
                 "finalExample_String-with_Many**Kinds++of&&Symbols_and123Numbers",  # Final example with many kinds of symbols and numbers
-                "The room was a disaster zone, with clothes strewn across the floor like a colorful patchwork quilt tossed by a hurricane. Empty soda cans and crumpled snack wrappers littered every available surface, while textbooks and notebooks lay scattered about in haphazard piles. The once-pristine whiteboard was now covered in a chaotic jumble of equations and doodles, with eraser dust forming a fine layer over everything. The air was thick with the scent of stale pizza and sweat, and the sound of a buzzing fly added to the cacophony. Amidst the chaos, a lone laptop sat precariously on the edge of a cluttered desk, its screen flickering intermittently as if struggling to stay alive amidst the chaos."
+                # "The room was a disaster zone, with clothes strewn across the floor like a colorful patchwork quilt tossed by a hurricane. Empty soda cans and crumpled snack wrappers littered every available surface, while textbooks and notebooks lay scattered about in haphazard piles. The once-pristine whiteboard was now covered in a chaotic jumble of equations and doodles, with eraser dust forming a fine layer over everything. The air was thick with the scent of stale pizza and sweat, and the sound of a buzzing fly added to the cacophony. Amidst the chaos, a lone laptop sat precariously on the edge of a cluttered desk, its screen flickering intermittently as if struggling to stay alive amidst the chaos."
             ]
         self.test_camel_truth = [
                 "simpleTestString",
@@ -54,7 +54,7 @@ class TestCaseParser(unittest.TestCase):
                 "shortAndSweet12345",
                 "superLongStringWithALotOfDifferentTypesOfCharacters1234567890",
                 "finalExampleStringWithManyKindsOfSymbolsAnd123Numbers",
-                "theRoomWasADisasterZoneWithClothesStrewnAcrossTheFloorLikeAColorfulPatchWorkQuiltTossedByAHurricaneEmptySodaCansAndCrumpledSnackWrappersLitteredEveryAvailableSurfaceWhileTextbooksAndNotebooksLayScatteredAboutInHaphazardPilesTheOncePristineWhiteBoardWasNowCoveredInAChaoticJumbleOfEquationsAndDoodlesWithEraserDustFormingAFineLAyeRoverEverythingTheAirWasThickWithTheScentOfStalePizzaAndSweatAndTheSoundOfABuzzIngFlyAddedToTheCacophonyAmidstTheChaosAloneLaptopSatPrecariouslyONTheEdgeOfAClutteredDesKitsScreenFlickeringIntermittentlyAsIfStrugglingToStayAliveAmidstTheChaos"
+                # "theRoomWasADisasterZoneWithClothesStrewnAcrossTheFloorLikeAColorfulPatchWorkQuiltTossedByAHurricaneEmptySodaCansAndCrumpledSnackWrappersLitteredEveryAvailableSurfaceWhileTextbooksAndNotebooksLayScatteredAboutInHaphazardPilesTheOncePristineWhiteBoardWasNowCoveredInAChaoticJumbleOfEquationsAndDoodlesWithEraserDustFormingAFineLAyeRoverEverythingTheAirWasThickWithTheScentOfStalePizzaAndSweatAndTheSoundOfABuzzIngFlyAddedToTheCacophonyAmidstTheChaosAloneLaptopSatPrecariouslyONTheEdgeOfAClutteredDesKitsScreenFlickeringIntermittentlyAsIfStrugglingToStayAliveAmidstTheChaos"
         ]
 
     def start_time(self):

@@ -1,6 +1,6 @@
 # CaseParser
 
-CaseParser is a Python class that provides string formatting for different common programming cases. It can parse and format strings in different casing styles such as lower case, camel case, pascal case, and upper case. It also provides an option to drop vowels from the words.
+CaseParser is a Python class that provides string formatting for different common programming cases. It can parse and format strings in different casing styles such as lower case, camel case, pascal case, and upper case any case can be infused with any string as a seperator. It also provides an option to drop vowels from the words.
 
 ## Usage
 

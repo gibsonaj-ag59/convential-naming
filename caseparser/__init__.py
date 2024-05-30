@@ -43,7 +43,7 @@ class CaseParser():
                         equal to w_dict")
     except AssertionError as e:
         __en_dict__ |= __w_dict__
-        with open('words.json', 'w') as f:
+        with open(w_json, 'w') as f:
             json.dump(__en_dict__, f, indent=4)
     
     def __init__(self):
