@@ -84,10 +84,10 @@ class CaseParser():
         Returns:
             string: converted strings joined on sep
         """
-        words = self.__cases__[casing](words)
+        _words = self.__cases__[casing](words)
         if drop_vowels:
-            words = [self.vowel_drop(w) for w in words]
-        return sep.join(words)
+            _words = [self.vowel_drop(w) for w in _words]
+        return sep.join(_words)
 
     def lower_case(self, words):
         """Converts parsed word list to a list of lowercase strings
@@ -110,6 +110,7 @@ class CaseParser():
         Returns:
             list: camelCase strings
         """
+        words[1:] = [w.capitalize() for w in words[1:]]
         return words
     
     def pascal_case(self, words):
@@ -140,7 +141,8 @@ class CaseParser():
         for s in self.__syms__:
             if s in string:
                 string = string.replace(s, '')
-        return string.lower()
+        string = string.lower()
+        return string
     
     def _parse(self, string:str, sep='', casing='lower',
               drop_vowels=False):
@@ -161,23 +163,24 @@ class CaseParser():
         norm_string = list(self.normalize(string))
         reps = len(norm_string)
         i = reps
-        n = 1
+        n = 0
         while i in range(reps, 0, -1):
-            if str(len(norm_string[-i:-n]) - 1) in self.__en_dict__.keys():
-                if str(norm_string[-i:-n]).isdecimal():
-                    words_list.append(norm_string[-i:-n])
-                    i = len(norm_string[:-i])
-                    n += len(norm_string[-i:-n]) 
-                elif str(norm_string[-i:-n]) in \
-                    self.__en_dict__[str(len(norm_string[-i:-n])-1)] \
+            if str(len(norm_string[i:n])+1) in self.__en_dict__.keys():
+                if str(norm_string[i:n]).isdecimal():
+                    words_list.append(norm_string[i:n])
+                    n -= len(norm_string[i:n]) + 1
+                elif str(norm_string[i:n]) in \
+                    self.__en_dict__[str(len(norm_string[i:n])+1)] \
                         .get(norm_string[-i], []):
-                    words_list.append(norm_string[-i:-n])
-                    i = len(norm_string)
+                    words_list.append(norm_string[i:n])
+                    n -= len(norm_string[i:n]) 
+                    i = reps
                 else:
-                    i -= 1
+                    reps = n
+                    i += 1
             else:
-                i -= 1
-        words_list = words_list[-1:]
+                reps = n
+                i += 1
         return self.create_case(words_list, sep=sep, casing=casing, drop_vowels=drop_vowels)
 
     def parse(self, *strings:list[str], sep='', casing='lower', drop_vowels=False):

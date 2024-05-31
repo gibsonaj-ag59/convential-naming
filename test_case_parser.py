@@ -44,8 +44,9 @@ class TestCaseParser(unittest.TestCase):
     def test_camel_case_parse(self):
         for sep in self.seps:
             strings = self.CP.parse(*self.test_cases, sep=sep, casing='camel', drop_vowels=False)
+            print(strings)
             self.assertTrue(len(strings) == 20)
-            self.assertTrue(strings[0].islower())
+            self.assertTrue(strings[0][0].islower())
             for s in strings:
                 self.assertNotRegex(s, r'([^a-zA-Z0-9' + sep + '])')
         print(self.get_time())
@@ -61,6 +62,7 @@ class TestCaseParser(unittest.TestCase):
     def test_drop_vowels_all_cases(self):
         for sep in self.seps:
             strings = self.CP.parse(*self.test_cases, sep=sep, casing='lower', drop_vowels=True)
+            self.assertTrue(word.islower() for word in strings)
             for s in strings:
                 self.assertNotRegex(s, r'([^a-zA-Z0-9' + sep + '])')
                 self.assertNotRegex(s, r'^[^aeiou]+')
